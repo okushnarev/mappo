@@ -1,3 +1,4 @@
+from .independent_ppo_learner import IndependentPPOLearner
 from .q_learner import QLearner
 from .coma_learner import COMALearner
 from .qtran_learner import QLearner as QTranLearner
@@ -17,3 +18,5 @@ REGISTRY["central_ppo_learner"] = CentralPPOLearner
 REGISTRY["trust_region_learner"] = TrustRegionLearner
 REGISTRY["trust_region_learner_srmt"] = TrustRegionLearnerSRMT
 REGISTRY["joint_learner"] = JointLearner
+REGISTRY['independent_ppo_learner'] = IndependentPPOLearner
+REGISTRY['independent_ppo_learner_srmt'] = IndependentPPOLearner

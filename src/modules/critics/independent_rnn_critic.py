@@ -5,6 +5,7 @@ import torch.nn.functional as F
 
 from components.popart import PopArt
 
+
 class IndependentRNNCritic(nn.Module):
     def __init__(self, scheme, args):
         super(IndependentRNNCritic, self).__init__()
@@ -30,7 +31,7 @@ class IndependentRNNCritic(nn.Module):
     def forward(self, batch, t=None):
         bs, max_t = batch.batch_size, batch.max_seq_length
 
-        h_in = self.fc1.weight.new(batch.batch_size * self.n_agents, self.args.rnn_hidden_dim).zero_() 
+        h_in = self.fc1.weight.new(batch.batch_size * self.n_agents, self.args.rnn_hidden_dim).zero_()
 
         # avail_actions = batch['avail_actions'].cuda()
         # alive_mask = ( (avail_actions[:, :, :, 0] != 1.0) * (th.sum(avail_actions, dim=-1) != 0.0) ).float()
@@ -42,13 +43,13 @@ class IndependentRNNCritic(nn.Module):
             inputs, _, _ = self._build_inputs(batch, t=t)
             # inputs = inputs * dead_mask[:, t].reshape(batch.batch_size * self.n_agents, self.input_shape)
 
-            if self.detach_every and  ((t % self.detach_every) == 0):
+            if self.detach_every and ((t % self.detach_every) == 0):
                 h_in = h_in.detach()
 
             x = F.relu(self.fc1(inputs))
             h_in = self.rnn(x, h_in)
             q = self.v_out(h_in)
-            outputs.append(q.view(bs, self.n_agents)) # bs * ts * n_agents
+            outputs.append(q.view(bs, self.n_agents))  # bs * ts * n_agents
 
         output_tensor = th.stack(outputs, dim=1)
         return output_tensor
@@ -56,7 +57,7 @@ class IndependentRNNCritic(nn.Module):
     def _build_inputs(self, batch, t=None):
         bs = batch.batch_size
         max_t = batch.max_seq_length if t is None else 1
-        ts = slice(None) if t is None else slice(t, t+1)
+        ts = slice(None) if t is None else slice(t, t + 1)
         inputs = []
 
         # agent-specific observation
@@ -67,9 +68,10 @@ class IndependentRNNCritic(nn.Module):
             if t == 0:
                 inputs.append(th.zeros_like(batch["actions_onehot"][:, 0:1]).view(bs, max_t, 1, -1))
             elif isinstance(t, int):
-                inputs.append(batch["actions_onehot"][:, slice(t-1, t)].view(bs, max_t, 1, -1))
+                inputs.append(batch["actions_onehot"][:, slice(t - 1, t)].view(bs, max_t, 1, -1))
             else:
-                last_actions = th.cat([th.zeros_like(batch["actions_onehot"][:, 0:1]), batch["actions_onehot"][:, :-1]], dim=1)
+                last_actions = th.cat([th.zeros_like(batch["actions_onehot"][:, 0:1]), batch["actions_onehot"][:, :-1]],
+                                      dim=1)
                 last_actions = last_actions.view(bs, max_t, 1, -1)
                 inputs.append(last_actions)
 
