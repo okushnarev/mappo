@@ -18,5 +18,6 @@ NV_GPU="$GPU" ${cmd} run --gpus device=$GPU \
     --user $(id -u) \
     --memory 100g \
     -v $(pwd):/home/minsun/pymarl \
+    -v ~/StarCraftII:/home/minsun/pymarl/3rdparty/StarCraftII \
     -t pymarl:smacv2 \
     ${@:2}

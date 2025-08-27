@@ -54,7 +54,7 @@ class BasicMAC:
         # For training: obs normalization has already been done in learner
         agent_inputs = self._build_inputs(ep_batch, t, enable_norm=enable_norm)
 
-        if self.detach_every and  ((t % self.detach_every) == 0):
+        if self.detach_every and ((t % self.detach_every) == 0):
             self.agent.detach_hidden()
             assert self.agent.h_in.is_leaf, self.agent.h_in
         elif t != 0:
@@ -121,7 +121,7 @@ class BasicMAC:
         bs = batch.batch_size
         inputs = []
 
-        obs =batch["obs"][:, t]
+        obs = batch["obs"][:, t]
         # normalize obs
         if enable_norm and self.is_obs_normalized:
             obs_mean = self.obs_rms.mean.unsqueeze(0).unsqueeze(0)

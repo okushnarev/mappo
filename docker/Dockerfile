@@ -5,8 +5,8 @@ RUN rm /etc/apt/sources.list.d/cuda.list
 RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 RUN apt-get update && apt-get install -y git
 
-RUN pip install --upgrade pip
-RUN pip install numpy scipy pyyaml matplotlib imageio pygame tensorboard-logger ruamel.base ryd wandb
+RUN pip install --force-reinstall 'pip<24.1'
+RUN pip install numpy scipy pyyaml matplotlib imageio pygame tensorboard-logger ruamel.base ryd wandb 'transformers==4.43.3'
 
 RUN mkdir /install
 WORKDIR /install

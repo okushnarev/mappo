@@ -14,6 +14,8 @@ import yaml
 
 from run import run
 
+th.autograd.set_detect_anomaly(True)
+
 SETTINGS['CAPTURE_MODE'] = "fd" # set to "no" if you want to see stdout/stderr in console
 logger = get_logger()
 
@@ -141,6 +143,7 @@ if __name__ == '__main__':
     logger.info("Saving to FileStorageObserver in results/sacred.")
     file_obs_path = os.path.join(results_path, "sacred")
     ex.observers.append(FileStorageObserver.create(file_obs_path))
+
 
     ex.run_commandline(params)
 

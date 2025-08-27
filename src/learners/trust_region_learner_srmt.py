@@ -8,6 +8,8 @@ from components.episode_buffer import EpisodeBatch
 from modules.critics import critic_REGISTRY
 from components.running_mean_std import RunningMeanStd
 
+from modules.cores.srmt_core import TransformerCore
+
 
 def compute_logp_entropy(logits, actions, masks):
     masked_logits = th.where(
@@ -31,12 +33,14 @@ def compute_logp_entropy(logits, actions, masks):
     return result
 
 
-class TrustRegionLearner:
+class TrustRegionLearnerSRMT:
     def __init__(self, mac, scheme, logger, args):
         self.args = args
         self.n_agents = args.n_agents
         self.n_actions = args.n_actions
         self.logger = logger
+
+        self.srmt_core = TransformerCore(args, args.obs_shape) if getattr(self.args, "attn_core", False) else lambda batch: batch
 
         self.mac = mac
         self.agent_params = list(mac.parameters())
@@ -211,6 +215,10 @@ class TrustRegionLearner:
             self.normalize_obs(batch, alive_mask)
             # NOTE: state in batch is being updated
             self.normalize_state(batch, mask)
+
+        # Forward normalized observations via SRMT core
+        processed_obs = self.srmt_core(batch)
+        batch.update({'obs': processed_obs})
 
         if self.agent_type == "rnn":
             old_action_logits = []
@@ -450,7 +458,7 @@ class TrustRegionLearner:
 
     def load_models(self, path):
         self.mac.load_models(path)
-        self.mac.critic.load_state_dict(
+        self.critic.load_state_dict(
             th.load(
                 "{}/critic.th".format(path), map_location=lambda storage, loc: storage
             )

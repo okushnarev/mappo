@@ -17,12 +17,12 @@ config=$1  # qmix
 tag=$2
 units=${3:-5}   # MMM2 left out
 clipping_range=${9:-0.1}
-lr=${10:-0.0001}
+lr=${10:-0.0005}
 offset=0
-maps=${8:-sc2_gen_protoss,sc2_gen_zerg,sc2_gen_terran,sc2_gen_protoss_open_loop,sc2_gen_terran_open_loop,sc2_gen_zerg_open_loop}
-threads=${4:-27} # 2
+maps=${8:-sc2_gen_protoss,sc2_gen_zerg,sc2_gen_terran}
+threads=${4:-1} # 2
 args=${5:-}    # ""
-gpus=${6:-0,1,2,3,4,5,6,7}    # 0,1,2
+gpus=${6:-0}    # 0,1,2
 times=${7:-3}   # 5
 
 maps=(${maps//,/ })
@@ -56,7 +56,7 @@ for lr in "${lrs[@]}"; do
                     gpu=${gpus[$(($count % ${#gpus[@]}))]}  
                     group="${config}-${tag}"
                     enemies=$(($unit + $offset))
-                    $debug ./run_docker.sh $gpu python3 src/main.py --no-mongo --config="$config" --env-config="$map" with env_args.capability_config.n_units=$unit env_args.capability_config.n_enemies=$enemies group="$group" clip_range=$clipping_range lr_actor=$lr use_wandb=True save_model=True "${args[@]}" &
+                    $debug ./run_docker.sh $gpu python3 src/main.py --no-mongo --config="$config" --env-config="$map" with env_args.capability_config.n_units=$unit env_args.capability_config.n_enemies=$enemies group="$group" clip_range=$clipping_range lr_actor=$lr use_wandb=False save_model=True "${args[@]}" &
 
                     count=$(($count + 1))     
                     if [ $(($count % $threads)) -eq 0 ]; then

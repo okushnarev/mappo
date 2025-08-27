@@ -102,6 +102,7 @@ def run_sequential(args, logger):
     args.n_agents = env_info["n_agents"]
     args.n_actions = env_info["n_actions"]
     args.state_shape = env_info["state_shape"]
+    args.obs_shape = env_info["obs_shape"]
 
     framestack_num = args.env_args.get("framestack_num", 1)
     # Default/Base scheme
@@ -140,6 +141,7 @@ def run_sequential(args, logger):
 
     # Give runner the scheme
     runner.setup(scheme=scheme, groups=groups, preprocess=preprocess, mac=mac)
+
 
     # Learner
     learner = le_REGISTRY[args.learner](mac, buffer.scheme, logger, args)
