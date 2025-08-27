@@ -29,7 +29,7 @@ def compute_logp_entropy(logits, actions, masks):
     }
     return result
 
-class IndependentPPOLearner:
+class IndependentPPOLearnerSRMT:
     def __init__(self, mac, scheme, logger, args):
         self.args = args
         self.n_agents = args.n_agents
