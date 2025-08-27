@@ -52,4 +52,4 @@ attn_core: True
 core_memory: True
 use_global_memory: True
 
-name: "ppo_rnn_central_V_SRMT"
+name: "ppo_rnn_central_V_srmt"

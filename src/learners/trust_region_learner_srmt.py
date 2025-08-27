@@ -40,7 +40,8 @@ class TrustRegionLearnerSRMT:
         self.n_actions = args.n_actions
         self.logger = logger
 
-        self.srmt_core = TransformerCore(args, args.obs_shape) if getattr(self.args, "attn_core", False) else lambda batch: batch
+        self.srmt_core = TransformerCore(args, args.obs_shape) if getattr(self.args, "attn_core", False) else lambda \
+            batch: batch
 
         self.mac = mac
         self.agent_params = list(mac.parameters())
@@ -216,7 +217,7 @@ class TrustRegionLearnerSRMT:
             # NOTE: state in batch is being updated
             self.normalize_state(batch, mask)
 
-        # Forward normalized observations via SRMT core
+        # Forward observations via SRMT core
         processed_obs = self.srmt_core(batch)
         batch.update({'obs': processed_obs})
 
