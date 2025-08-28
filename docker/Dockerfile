@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y git
 RUN pip install --force-reinstall 'pip<24.1'
 RUN pip install numpy scipy pyyaml matplotlib imageio pygame tensorboard-logger ruamel.base ryd wandb 'transformers==4.43.3'
 
+RUN rm /opt/conda/lib/python3.8/site-packages/transformers/models/gpt2/modeling_gpt2.py
+COPY src/modeling_gpt2.py /opt/conda/lib/python3.8/site-packages/transformers/models/gpt2/
+
 RUN mkdir /install
 WORKDIR /install
 

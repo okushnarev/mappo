@@ -14,7 +14,6 @@ import yaml
 
 from run import run
 
-th.autograd.set_detect_anomaly(True)
 
 SETTINGS['CAPTURE_MODE'] = "fd" # set to "no" if you want to see stdout/stderr in console
 logger = get_logger()

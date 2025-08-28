@@ -67,7 +67,7 @@ class TransformerCore(nn.Module):
                     first_time_mem = True
                 else:
                     agent_memory_batch = self.agent_memory.unsqueeze(1)
-                    restored_global_memory = self.global_memory.repeat(5, 1, 1)
+                    self.global_memory = self.agent_memory.repeat(self.num_agents, 1, 1)
         if self.history_seq is not None:
             inputs = torch.cat([self.history_seq, core_input], dim=1)
         else:
@@ -84,7 +84,7 @@ class TransformerCore(nn.Module):
         encoder_hidden_states = None
         if self.agent_memory is not None:
             if self.use_global_memory:
-                encoder_hidden_states = restored_global_memory.contiguous()
+                encoder_hidden_states = self.global_memory.contiguous()
         x = self.core_transformer(hidden_states=hidden_states.contiguous(),
                                   encoder_hidden_states=encoder_hidden_states,
                                   )[0]
@@ -106,9 +106,6 @@ class TransformerCore(nn.Module):
             core_out = core_out.squeeze(1)
             if self.use_memory:
                 self.agent_memory = my_new_mem.squeeze(1)
-
-        if self.global_memory is not None:
-            self.global_memory = self.agent_memory
 
 
         return core_out
